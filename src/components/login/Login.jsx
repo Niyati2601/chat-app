@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import './Login.css'
 import toast from 'react-hot-toast';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../lib/firebase';
 import { doc, setDoc } from "firebase/firestore"; 
 import upload from '../lib/upload';
+import './Login.css';
 
 const Login = () => {
 
@@ -78,7 +78,7 @@ const Login = () => {
     return (
         <div className='login'>
             <div className="item">
-                <h2>WelCome back,</h2>
+                <h2>Welcome back</h2>
                 <form onSubmit={handleLogin}>
                     <input type="email" placeholder='Email' name='email' id='email' />
                     <input type="password" placeholder='Password' name='password' id='password' />
@@ -92,7 +92,7 @@ const Login = () => {
                 <h2>Create an Account</h2>
                 <form onSubmit={handleRegister}>
                     <label htmlFor='file'>
-                        <img src={avatar.url || 'https://media.istockphoto.com/id/1652227670/photo/running-pembroke-welsh-corgi-puppy.jpg?s=2048x2048&w=is&k=20&c=ztS3xRRQh777nnANvjoBRPwYvYqR7nNzgNJiban6-TY='} alt='' />
+                        <img src={avatar.url || './avatar.png'} alt='' />
                         Upload an image</label>
                     <input type="file" id='file' style={{ display: 'none' }} onChange={handleAvatar} />
                     <input type="text" placeholder='Username' name='username' id='username' />

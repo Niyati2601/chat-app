@@ -1,35 +1,59 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import './details.css';
 import { auth, db } from '../lib/firebase';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { useUserStore } from '../lib/userStore';
 import { useChatStore } from '../lib/chatStore';
-import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import Login from '../login/Login';
 
 const Details = () => {
-  const {currentUser} = useUserStore();
-  const {chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore();
-  const handleBlock = async() => {
-    if(!user) return;
+  const { currentUser } = useUserStore();
+  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore();
+  const [sharedImages, setSharedImages] = useState([]);
 
+  useEffect(() => {
+    const fetchChatImages = async () => {
+      if (!chatId || !currentUser) return;
+
+      try {
+        const chatDocRef = doc(db, "chats", chatId); // Adjust to your actual collection and document structure
+        const chatDocSnap = await getDoc(chatDocRef);
+
+        if (chatDocSnap.exists()) {
+          const chatData = chatDocSnap.data();
+          const messagesWithImages = chatData.messages.filter(message => message.img); // Filter messages with 'img'
+          const images = messagesWithImages.map(message => message.img);
+          setSharedImages(images);
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching document: ", error);
+      }
+    };
+
+    fetchChatImages();
+  }, [chatId, currentUser]);
+
+  const handleBlock = async () => {
+    if (!user) return;
     const updateDocRef = doc(db, "users", currentUser.id);
     try {
-      await updateDoc(updateDocRef,{
+      await updateDoc(updateDocRef, {
         blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
-      })
-
+      });
       changeBlock();
     } catch (error) {
       console.log('error: ', error);
-      
     }
-  }
+  };
+
   const handleLogout = () => {
     auth.signOut();
-    <Navigate to={Login} />
-  }
+    return <Navigate to={Login} />;
+  };
 
   return (
     <div className='detail'>
@@ -57,27 +81,15 @@ const Details = () => {
             <img src='./arrowDown.png' alt='' />
           </div>
           <div className="photos">
-            <div className="photoItem">
-              <div className="photoDetail">
-              <img src='https://media.istockphoto.com/id/1652227670/photo/running-pembroke-welsh-corgi-puppy.jpg?s=2048x2048&w=is&k=20&c=ztS3xRRQh777nnANvjoBRPwYvYqR7nNzgNJiban6-TY=' alt='' />
-              <span>avatar.png</span>
+            {sharedImages.map((image, index) => (
+              <div className="photoItem" key={index}>
+                <div className="photoDetail">
+                  <img src={image} alt='' />
+                  <span>{image}</span>
+                </div>
+                <img src='./download.png' alt='' className="icons" />
               </div>
-            <img src='./download.png' alt='' className="icons" />
-            </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-              <img src='https://media.istockphoto.com/id/1652227670/photo/running-pembroke-welsh-corgi-puppy.jpg?s=2048x2048&w=is&k=20&c=ztS3xRRQh777nnANvjoBRPwYvYqR7nNzgNJiban6-TY=' alt='' />
-              <span>avatar.png</span>
-              </div>
-            <img src='./download.png' alt='' className="icons" />
-            </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-              <img src='https://media.istockphoto.com/id/1652227670/photo/running-pembroke-welsh-corgi-puppy.jpg?s=2048x2048&w=is&k=20&c=ztS3xRRQh777nnANvjoBRPwYvYqR7nNzgNJiban6-TY=' alt='' />
-              <span>avatar.png</span>
-              </div>
-            <img src='./download.png' alt='' className="icons" />
-            </div>
+            ))}
           </div>
         </div>
         <div className="option">
@@ -86,11 +98,13 @@ const Details = () => {
             <img src='./arrowUp.png' alt='' />
           </div>
         </div>
-        <button className='blockButton' onClick={handleBlock}>{isCurrentUserBlocked ? "You are blocked" : isReceiverBlocked ? "User is blocked" : "Block User"}</button>
+        <button className='blockButton' onClick={handleBlock}>
+          {isCurrentUserBlocked ? "You are blocked" : isReceiverBlocked ? "User is blocked" : "Block User"}
+        </button>
         <button className='logout' onClick={handleLogout}>Logout</button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Details
+export default Details;

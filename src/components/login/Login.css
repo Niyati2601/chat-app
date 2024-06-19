@@ -1,3 +1,4 @@
+/* 
 .login {
   width: 100%;
   height: 100%;
@@ -65,4 +66,106 @@
     height: 80%;
     background-color: rgba(17, 25, 40, 0.7);
   }
+} */
+
+.login {
+  width: 100%;
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  flex-direction: column; /* Column layout for mobile */
+  align-items: center;
+  justify-content: center; /* Center items vertically */
+  gap: 10px; /* Vertical gap between items */
+
+  .item {
+    width: 100%;
+    max-width: 300px; /* Limit item width for readability on smaller screens */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Vertical gap between form elements */
+
+    form {
+      width: 80%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px; /* Vertical gap between form fields */
+      align-items: center;
+
+      input {
+        width: 100%;
+        max-width: 100%; /* Full width */
+        border: none;
+        background-color: rgba(17, 25, 40, 0.5);
+        color: white;
+        border-radius: 5px;
+        padding: 15px;
+        outline: none;
+        font-size: 16px;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.5);
+        }
+      }
+
+      label {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        text-decoration: underline;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+          object-fit: cover;
+          opacity: 0.6;
+        }
+      }
+    }
+
+    button {
+      width: 100%;
+      max-width: 100%; /* Full width */
+      padding: 15px;
+      border: none;
+      background-color: #282828;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+
+      &:disabled {
+        cursor: not-allowed;
+        background-color: #464646;
+      }
+    }
+  }
+
+  .seperator {
+    display: none; /* Hidden separator on mobile */
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row; /* Switch to row layout for tablets and desktops */
+    align-items: center;
+    justify-content: space-evenly; /* Evenly distribute items horizontally */
+    gap: 50px; /* Increased gap between items */
+
+    .item {
+      flex: 1; /* Each item takes equal space */
+      max-width: none; /* Allow items to expand */
+    }
+
+    .seperator {
+      display: block; /* Show separator */
+      height: 70%; /* Adjust height */
+      background-color: rgba(17, 25, 40, 0.7);
+      width: 2px;
+    }
+  }
 }
+

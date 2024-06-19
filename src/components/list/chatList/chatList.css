@@ -1,4 +1,4 @@
-.chatList{
+/* .chatList{
     flex: 1;
     overflow: scroll;
     .search{
@@ -71,4 +71,118 @@
             }
         }
     }
-}
+} */
+
+.chatList {
+    flex: 1;
+    overflow: auto; /* Use 'auto' for scrollable content */
+  
+    .search {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px; /* Adjust padding for smaller screens */
+      gap: 15px; /* Adjust gap for smaller screens */
+      border-bottom: 1px solid #ccc;
+  
+      .searchBar {
+        flex: 1;
+        background-color: rgba(17, 25, 40, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Adjust gap for smaller screens */
+        border-radius: 10px;
+        padding: 10px;
+        
+        input {
+          background-color: transparent;
+          border: none;
+          outline: none;
+          color: white;
+          flex: 1;
+          font-size: 14px; /* Adjust font size for smaller screens */
+        }
+  
+        img {
+          width: 18px; /* Adjust icon size for smaller screens */
+          height: 18px; /* Adjust icon size for smaller screens */
+        }
+      }
+  
+      .add {
+        width: 30px; /* Adjust button size for smaller screens */
+        height: 30px; /* Adjust button size for smaller screens */
+        background-color: rgba(17, 25, 40, 0.5);
+        border-radius: 10px;
+        padding: 8px; /* Adjust padding for smaller screens */
+        cursor: pointer;
+      }
+    }
+  
+    .item {
+      display: flex;
+      align-items: center;
+      padding: 15px; /* Adjust padding for smaller screens */
+      gap: 15px; /* Adjust gap for smaller screens */
+      cursor: pointer;
+      border-bottom: 1px solid #ccc;
+  
+      img {
+        width: 40px; /* Adjust image size for smaller screens */
+        height: 40px; /* Adjust image size for smaller screens */
+        border-radius: 50%;
+        object-fit: cover;
+      }
+  
+      .texts {
+        display: flex;
+        flex-direction: column;
+        gap: 8px; /* Adjust gap between elements for smaller screens */
+  
+        span {
+          font-weight: 500;
+          font-size: 14px; /* Adjust font size for smaller screens */
+        }
+  
+        p {
+          font-weight: 300;
+          color: #282828;
+          font-size: 12px; /* Adjust font size for smaller screens */
+        }
+      }
+    }
+  
+    @media (min-width: 768px) {
+      .search {
+        padding: 20px;
+        gap: 20px;
+      }
+  
+      .add {
+        width: 36px;
+        height: 36px;
+        padding: 10px;
+      }
+  
+      .item {
+        padding: 20px;
+        gap: 20px;
+  
+        img {
+          width: 50px;
+          height: 50px;
+        }
+  
+        .texts {
+          span {
+            font-size: 16px; /* Adjust font size for larger screens */
+          }
+  
+          p {
+            font-size: 14px; /* Adjust font size for larger screens */
+          }
+        }
+      }
+    }
+  }
+  

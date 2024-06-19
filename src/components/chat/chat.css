@@ -1,7 +1,7 @@
 .chat {
   flex: 2;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  border-left: 1px solid #dddddd35;
+  border-right: 1px solid #dddddd35;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -11,7 +11,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #dddddd35;
 
     .user {
       display: flex;
@@ -34,10 +34,11 @@
           font-size: 18px;
           font-weight: bold;
         }
+
         p {
           font-size: 14px;
           font-weight: 300;
-          color: #282828;
+          color: #282828; /* Light gray text color */
         }
       }
     }
@@ -61,72 +62,71 @@
     flex-direction: column;
     gap: 20px;
 
-    .messages{
+    .message {
+      max-width: 70%;
+      display: flex;
+      gap: 20px;
+
+      &.own {
+        align-self: flex-end;
+
+        .texts {
+          p {
+            background-color: #212121;/* Own message background color */
+            color: white; /* Own message text color */
+          }
+        }
+      }
+
+      img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .texts {
+        flex: 1;
         display: flex;
-        max-width: 70%;
-        gap:20px;
+        flex-direction: column;
+        gap: 5px;
 
-        &.own{
-            align-self: flex-end;
-
-
-            .texts{
-                
-                p{
-                    background-color: #212121;
-                    /* color: white;
-                    border-radius: 10px 0px 10px 10px;
-                    padding: 10px; */
-                }
-            }
+        img {
+          width: 100%;
+          height: 300px;
+          border-radius: 10px;
+          object-fit: cover;
         }
 
-        img{
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            object-fit: cover;
+        p {
+          padding: 20px;
+          background-color: rgba(17, 25, 40, 0.5);
+          border-radius: 10px;
+          color: white; /* Message text color */
         }
-        .texts{
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
 
-            img{
-                width: 100%;
-                height: 300px;
-                border-radius: 10px;
-                object-fit: cover;
-            }
-
-            p{
-                padding: 20px;
-                background-color: rgba(17, 25, 40, 0.5);
-                color: white;
-                border-radius: 10px;
-            }
-
-
-            span{
-                font-size: 12px;
-            }
+        span {
+          font-size: 13px;
         }
+      }
     }
   }
+
   .bottom {
+    padding: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #dddddd35;
     gap: 20px;
     margin-top: auto;
 
     .icons {
       display: flex;
       gap: 20px;
+      font-size: 25px;
     }
+
     img {
       width: 20px;
       height: 20px;
@@ -135,39 +135,41 @@
 
     input {
       flex: 1;
+      background-color: rgba(17, 25, 40, 0.6); /* Input field background color */
       border: none;
       outline: none;
-      color: white;
-      background-color: rgba(17, 25, 40, 0.5);
-      border-radius: 10px;
+      color: white; /* Input field text color */
       padding: 20px;
+      border-radius: 10px;
       font-size: 16px;
 
       &::placeholder {
-        color: white;
+        color: white; /* Placeholder text color */
       }
 
       &:disabled {
-        opacity: 0.5;
         cursor: not-allowed;
       }
     }
 
     .emoji {
       position: relative;
-
+      cursor: pointer;
+      font-size: 25px;
       .picker {
         position: absolute;
         bottom: 50px;
         left: 0;
       }
     }
+
     .sendButton {
-      background-color: #212121;
-      border-radius: 5px;
+      background-color: #212121; /* Send button background color */
+      color: white; /* Send button text color */
       padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      color: white;
 
       &:disabled {
         opacity: 0.5;
