@@ -152,7 +152,14 @@
           font-weight: 300;
           color: #282828;
           font-size: 12px; /* Adjust font size for smaller screens */
-        }
+          }
+            .lastMessage{
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              -webkit-line-clamp: 2; /* Number of lines to show */
+            }
       }
     }
   
