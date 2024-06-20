@@ -1,5 +1,8 @@
 .detail {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 
   .user {
     padding: 30px 20px;
@@ -21,6 +24,7 @@
     display: flex;
     flex-direction: column;
     gap: 25px;
+    overflow-y: auto;
 
     .option {
       .title {
@@ -37,6 +41,16 @@
           background-color: #282828;
         }
       }
+      .icons{
+        /* width: 30px;
+        height: 30px;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 50%;
+        background-color: #282828;
+        color: white; */
+        font-size: 25px;
+      }
     }
 
     .photos {
@@ -49,6 +63,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        font-size: 25px;
 
         .photoDetail {
           display: flex;
@@ -58,7 +73,7 @@
             width: 40px;
             height: 40px;
             border-radius: 5px;
-            object-fit: cover;
+            object-fit: contain;
           }
 
           span{
@@ -70,12 +85,14 @@
       }
 
       .icons{
-        width: 30px;
+        /* width: 30px;
         height: 30px;
         cursor: pointer;
         padding: 10px;
         border-radius: 50%;
         background-color: #282828;
+        color: white; */
+        font-size: 25px;
       }
     }
   }
@@ -109,4 +126,15 @@
         color: white;
     }
   }
+}
+
+.mostly-customized-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: transparent; /* or add it to the track */
+}
+
+/* Add a thumb */
+.mostly-customized-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(17, 25, 40, 0.5);
 }

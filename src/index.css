@@ -3,11 +3,11 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif, "Sofia", sans-serif;
 }
 
 body {
-  background-image: url('https://www.shutterstock.com/shutterstock/photos/2185682167/display_1500/stock-vector-seamless-pattern-vector-of-a-clock-a-white-background-cloth-pattern-decorated-with-clock-icons-2185682167.jpg');
+  background-image: url('https://i.pinimg.com/236x/dc/ed/9d/dced9dae60adba4fd03d6b591a77415c.jpg');
   align-items: center;
   justify-content: center;
   display: flex;
@@ -17,7 +17,7 @@ body {
 .container {
   width: 80vw;
   height: 90vh;
-  background-color: rgb(206, 227, 242, 0.65) ;
+  background-color: rgb(167 213 246 / 65%) ;
   border-radius: 12px;
   backdrop-filter: blur(10px) saturate(180%);
   display: flex;

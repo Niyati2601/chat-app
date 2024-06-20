@@ -7,11 +7,15 @@ import { useUserStore } from '../lib/userStore';
 import { useChatStore } from '../lib/chatStore';
 import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import Login from '../login/Login';
+import { MdDownloadForOffline } from "react-icons/md";
+import { IoIosArrowDropdownCircle, IoIosArrowDropupCircle } from "react-icons/io";
+
 
 const Details = () => {
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore();
   const [sharedImages, setSharedImages] = useState([]);
+  const [showSharedPhotos, setShowSharedPhotos] = useState(false);
 
   useEffect(() => {
     const fetchChatImages = async () => {
@@ -55,6 +59,10 @@ const Details = () => {
     return <Navigate to={Login} />;
   };
 
+  const toggleSharedPhotos = () => {
+    setShowSharedPhotos(prevState => !prevState);
+  };
+
   return (
     <div className='detail'>
       <div className="user">
@@ -62,40 +70,55 @@ const Details = () => {
         <h2>{user?.username}</h2>
         <p>Frontend Developer</p>
       </div>
-      <div className="info">
+      <div className="info mostly-customized-scrollbar">
         <div className="option">
           <div className="title">
             <span>Chat Settings</span>
-            <img src='./arrowUp.png' alt='' />
+            <IoIosArrowDropupCircle className='icons' />
           </div>
         </div>
         <div className="option">
           <div className="title">
             <span>Help & Privacy</span>
-            <img src='./arrowUp.png' alt='' />
+            <IoIosArrowDropupCircle className='icons' />
           </div>
         </div>
         <div className="option">
-          <div className="title">
+          <div className="title" onClick={toggleSharedPhotos}>
             <span>Shared Photos</span>
-            <img src='./arrowDown.png' alt='' />
+            {showSharedPhotos ? <IoIosArrowDropupCircle className='icons' /> : <IoIosArrowDropdownCircle className='icons' />}
           </div>
-          <div className="photos">
-            {sharedImages.map((image, index) => (
-              <div className="photoItem" key={index}>
-                <div className="photoDetail">
-                  <img src={image} alt='' />
-                  <span>{image}</span>
-                </div>
-                <img src='./download.png' alt='' className="icons" />
-              </div>
-            ))}
-          </div>
+          {showSharedPhotos && (
+            <div className="photos">
+              {sharedImages.length > 0 ? (
+                sharedImages.map((image, index) => {
+                  let fileName = "";
+                  if (typeof image === "string") {
+                    const lastSlashIndex = image.lastIndexOf('/');
+                    const queryIndex = image.indexOf('?');
+                    fileName = image.substring(lastSlashIndex + 1, queryIndex > -1 ? queryIndex : undefined);
+                  }
+                  const shortName = fileName.length > 30 ? `${fileName.substring(0, 30)}...` : fileName;
+                  return (
+                    <div className="photoItem" key={index}>
+                      <div className="photoDetail">
+                        <img src={image} alt='' />
+                        <span>{shortName}</span>
+                      </div>
+                      <MdDownloadForOffline className='icons' />
+                    </div>
+                  );
+                })
+              ) : (
+                <span style={{textAlign: 'center', color:'lightgrey'}}>No shared images yet!!</span>
+              )}
+            </div>
+          )}
         </div>
         <div className="option">
           <div className="title">
             <span>Shared Files</span>
-            <img src='./arrowUp.png' alt='' />
+            <IoIosArrowDropupCircle className='icons' />
           </div>
         </div>
         <button className='blockButton' onClick={handleBlock}>
@@ -108,3 +131,4 @@ const Details = () => {
 };
 
 export default Details;
+

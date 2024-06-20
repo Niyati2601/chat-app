@@ -16,7 +16,8 @@ import moment from 'moment';
 import { FaCamera, FaMicrophone } from "react-icons/fa";
 import { FaImage } from "react-icons/fa6";
 import { MdEmojiEmotions } from "react-icons/md";
-
+import toast from "react-hot-toast";
+import sound from '../../assets/notification.wav';
 
 const Chat = () => {
   const [chat, setChat] = useState();
@@ -26,27 +27,66 @@ const Chat = () => {
     file: null,
     url: "",
   });
+  const [hasUnreadMessage, setHasUnreadMessage] = useState(false);
 
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
     useChatStore();
 
   const endRef = useRef(null);
+  const notificationSound = useRef(new Audio(sound));
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat?.messages]);
 
   useEffect(() => {
-    const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
-      setChat(res.data());
+    const unSub = onSnapshot(doc(db, 'chats', chatId), (res) => {
+      const chatData = res.data();
+      if (chatData) {
+        setChat(chatData);
+  
+        // Check if there are new messages from the other user
+        const hasNewMessage = chatData.messages.some(
+          (message) => message.senderId !== currentUser.id && !message.isSeen
+        );
+  
+        if (hasNewMessage) {
+          setHasUnreadMessage(true);
+        } else {
+          setHasUnreadMessage(false);
+        }
+      }
     });
-
+  
     return () => {
       unSub();
     };
-  }, [chatId]);
+  }, [chatId, currentUser.id]);
 
+  useEffect(() => {
+    if (hasUnreadMessage) {
+      playNotificationSound();
+      showNotificationToast();
+    }
+  }, [hasUnreadMessage]);
+  
+  const playNotificationSound = () => {
+    notificationSound.current.play();
+  };
+  
+  const showNotificationToast = () => {
+    toast.success(`New Message from ${getLastMessageSenderName()}`);
+  };
+
+  const getLastMessageSenderName = () => {
+    const lastMessage = chat?.messages.slice().reverse().find(
+      (message) => message.senderId !== currentUser.id
+    );
+
+    return lastMessage ? lastMessage.senderName : 'Unknown User';
+  };
+  
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
     setOpen(false);
@@ -74,6 +114,7 @@ const Chat = () => {
       await updateDoc(doc(db, "chats", chatId), {
         messages: arrayUnion({
           senderId: currentUser.id,
+          senderName: currentUser.username, // Include sender name
           text,
           createdAt: new Date(),
           ...(imgUrl && { img: imgUrl }),
@@ -89,7 +130,7 @@ const Chat = () => {
         if (userChatsSnapshot.exists()) {
           const userChatsData = userChatsSnapshot.data();
 
-          const chatIndex = userChatsData.chats.findIndex(
+          const chatIndex = userChatsData?.chats?.findIndex(
             (c) => c.chatId === chatId
           );
 
@@ -105,13 +146,19 @@ const Chat = () => {
       });
     } catch (err) {
       console.log(err);
-    } finally{
-    setImg({
-      file: null,
-      url: "",
-    });
+    } finally {
+      setImg({
+        file: null,
+        url: "",
+      });
 
-    setText("");
+      setText("");
+    }
+  };
+
+  const handleKey = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
     }
   };
 
@@ -131,13 +178,13 @@ const Chat = () => {
           <img src="./info.png" alt="" />
         </div>
       </div>
-      <div className="center">
+      <div className="center mostly-customized-scrollbar">
         {chat?.messages?.map((message) => (
           <div
             className={
               message?.senderId === currentUser?.id ? "message own" : "message"
             }
-            key={message?.createAt}
+            key={message?.createdAt}
           >
             <div className="texts">
               {message?.img && <img src={message.img} alt="" />}
@@ -156,17 +203,18 @@ const Chat = () => {
         <div ref={endRef}></div>
       </div>
       <div className="bottom">
-          <input
-            type="text"
-            placeholder={
-              isCurrentUserBlocked || isReceiverBlocked
-                ? "You cannot send a message"
-                : "Type a message..."
-            }
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            disabled={isCurrentUserBlocked || isReceiverBlocked}
-          />
+        <input
+          type="text"
+          placeholder={
+            isCurrentUserBlocked || isReceiverBlocked
+              ? "You cannot send a message"
+              : "Type a message..."
+          }
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={isCurrentUserBlocked || isReceiverBlocked}
+          onKeyDown={handleKey}
+        />
         <div className="icons">
           <label htmlFor="file">
             <FaImage />

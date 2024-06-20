@@ -75,7 +75,7 @@
 
 .chatList {
     flex: 1;
-    overflow: auto; /* Use 'auto' for scrollable content */
+    overflow-y: auto; /* Use 'auto' for scrollable content */
   
     .search {
       display: flex;
@@ -101,6 +101,10 @@
           color: white;
           flex: 1;
           font-size: 14px; /* Adjust font size for smaller screens */
+
+          &::placeholder {
+            color: #ccc;
+          }
         }
   
         img {
