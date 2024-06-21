@@ -78,12 +78,6 @@ const Details = () => {
           </div>
         </div>
         <div className="option">
-          <div className="title">
-            <span>Help & Privacy</span>
-            <IoIosArrowDropupCircle className='icons' />
-          </div>
-        </div>
-        <div className="option">
           <div className="title" onClick={toggleSharedPhotos}>
             <span>Shared Photos</span>
             {showSharedPhotos ? <IoIosArrowDropupCircle className='icons' /> : <IoIosArrowDropdownCircle className='icons' />}

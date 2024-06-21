@@ -13,14 +13,15 @@ import { useChatStore } from "../lib/chatStore";
 import { useUserStore } from "../lib/userStore";
 import upload from "../lib/upload";
 import moment from 'moment';
-import { FaCamera, FaMicrophone } from "react-icons/fa";
+import { FaMicrophone } from "react-icons/fa";
 import { FaImage } from "react-icons/fa6";
 import { MdEmojiEmotions } from "react-icons/md";
 import toast from "react-hot-toast";
 import sound from '../../assets/notification.wav';
 import { PiCheck, PiChecks } from "react-icons/pi";
-import { LuSend, LuSendHorizonal } from "react-icons/lu";
-import { IoSendSharp } from "react-icons/io5";
+import { IoSendSharp, IoVideocam } from "react-icons/io5";
+import { IoCall } from "react-icons/io5";
+import { TiAttachment } from "react-icons/ti";
 
 
 const Chat = () => {
@@ -200,9 +201,11 @@ const Chat = () => {
           </div>
         </div>
         <div className="icons">
-          <img src="./phone.png" alt="" />
+          {/* <img src="./phone.png" alt="" />
           <img src="./video.png" alt="" />
-          <img src="./info.png" alt="" />
+          <img src="./info.png" alt="" /> */}
+          <IoCall />
+          <IoVideocam />
         </div>
       </div>
       <div className="center mostly-customized-scrollbar">
@@ -266,7 +269,7 @@ const Chat = () => {
             style={{ display: "none" }}
             onChange={handleImg}
           />
-          <FaMicrophone />
+          <TiAttachment />
         </div>
         <div className="emoji">
           <MdEmojiEmotions onClick={() => setOpen((prev) => !prev)} />
