@@ -62,7 +62,7 @@ const Chat = () => {
     return () => {
       unSub();
     };
-  }, [chatId, currentUser.id]);
+  }, [chatId, currentUser?.id]);
 
   useEffect(() => {
     if (hasUnreadMessage) {
@@ -169,7 +169,7 @@ const Chat = () => {
           <img src={user?.avatar || "./avatar.png"} alt="" />
           <div className="texts">
             <span>{user?.username}</span>
-            <p>Lorem ipsum dolor, sit amet.</p>
+            <p>{user?.status}</p>
           </div>
         </div>
         <div className="icons">

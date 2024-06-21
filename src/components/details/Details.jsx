@@ -68,7 +68,7 @@ const Details = () => {
       <div className="user">
         <img src={user?.avatar || './avatar.png'} alt="" />
         <h2>{user?.username}</h2>
-        <p>Frontend Developer</p>
+        <p>{user?.status}</p>
       </div>
       <div className="info mostly-customized-scrollbar">
         <div className="option">

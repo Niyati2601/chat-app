@@ -5,6 +5,7 @@ import { auth, db } from '../lib/firebase';
 import { doc, setDoc } from "firebase/firestore"; 
 import upload from '../lib/upload';
 import './Login.css';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
 
@@ -13,6 +14,7 @@ const Login = () => {
         url: ''
     })
     const [loading, setLoading] = useState(false);
+    const navigate =  useNavigate();
 
 
     const handleAvatar = (e) => {
@@ -34,7 +36,7 @@ const Login = () => {
         try {
             const res = await signInWithEmailAndPassword(auth, email, password)
             toast.success('Login Successful')
-            
+            navigate('/home')
             
         } catch (error) {
             toast.error(error.message)
@@ -68,6 +70,7 @@ const Login = () => {
 
 
             toast.success('Account created!! You can login now')
+            
         } catch (error) {
             toast.error(error.message)
         } finally {

@@ -8,6 +8,9 @@ import { auth } from "./components/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from "./components/lib/userStore";
 import { useChatStore } from "./components/lib/chatStore";
+import Profile from "./components/list/profile/Profile";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./home/Home";
 const App = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore()
   const { chatId } = useChatStore();
@@ -28,15 +31,18 @@ const App = () => {
   return (
     <div className="container">
       <Toaster />
+      <BrowserRouter>
+      <Routes>
       {currentUser !== null ? (
-        <>
-          <List />
-          {chatId && <Chat />}
-          {chatId && <Details />}
-        </>
-      ) : (
-        <Login />
-      )}
+            <>
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+            </>
+          ) : (
+            <Route path="/" element={<Login />} />
+          )}
+      </Routes>
+      </BrowserRouter>
     </div>
   );
 };

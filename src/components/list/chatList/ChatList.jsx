@@ -11,6 +11,7 @@ const ChatList = () => {
   const [addMode, setAddMode] = useState(false);
   const [input, setInput] = useState();
   const { currentUser } = useUserStore();
+  console.log('currentUser: ', currentUser);
   const { chatId, changeChat } = useChatStore();
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const ChatList = () => {
     });
 
     return () => { unsub() };
-  }, [currentUser.id])
+  }, [currentUser?.id])
 
   const handleSelect = async (chat) => {
     const userChats = chats.map((item) => {
@@ -67,11 +68,11 @@ const ChatList = () => {
         <img src={addMode ? './minus.png' : './plus.png'} alt='add' className='add' onClick={() => setAddMode(!addMode)} />
       </div>
       {filteredChats.map((chat) => (
-        <div className="item" key={chat.chatId} onClick={() => handleSelect(chat)} style={{ backgroundColor: chat.isSeen ? "transparent" : "whitesmoke" }}>
-          <img src={chat.user.blocked.includes(currentUser.id) ? "./avatar.png" : chat.user.avatar || './avatar.png'} alt='' />
+        <div className="item" key={chat?.chatId} onClick={() => handleSelect(chat)} style={{ backgroundColor: chat?.isSeen ? "transparent" : "whitesmoke" }}>
+          <img src={chat?.user.blocked.includes(currentUser.id) ? "./avatar.png" : chat?.user.avatar || './avatar.png'} alt='' />
           <div className="texts">
-            <span>{chat.user.blocked.includes(currentUser.id) ? "User" : chat.user.username}</span>
-            <p className='lastMessage'>{chat.lastMessage}</p> 
+            <span>{chat?.user.blocked.includes(currentUser.id) ? "User" : chat?.user.username}</span>
+            <p className='lastMessage'>{chat?.lastMessage}</p> 
           </div>
         </div>
 
