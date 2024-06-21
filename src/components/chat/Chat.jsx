@@ -18,6 +18,10 @@ import { FaImage } from "react-icons/fa6";
 import { MdEmojiEmotions } from "react-icons/md";
 import toast from "react-hot-toast";
 import sound from '../../assets/notification.wav';
+import { PiCheck, PiChecks } from "react-icons/pi";
+import { LuSend, LuSendHorizonal } from "react-icons/lu";
+import { IoSendSharp } from "react-icons/io5";
+
 
 const Chat = () => {
   const [chat, setChat] = useState();
@@ -32,6 +36,7 @@ const Chat = () => {
   const { currentUser } = useUserStore();
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } =
     useChatStore();
+    console.log(user)
 
   const endRef = useRef(null);
   const notificationSound = useRef(new Audio(sound));
@@ -41,7 +46,25 @@ const Chat = () => {
   }, [chat?.messages]);
 
   useEffect(() => {
-    const unSub = onSnapshot(doc(db, 'chats', chatId), (res) => {
+    const markMessagesAsSeen = async () => {
+      const chatDoc = await getDoc(doc(db, 'chats', chatId));
+      const chatData = chatDoc.data();
+  
+      if (chatData) {
+        const updatedMessages = chatData.messages.map(message => {
+          if (message.senderId !== currentUser.id) {
+            return { ...message, isSeen: true };
+          }
+          return message;
+        });
+  
+        await updateDoc(doc(db, 'chats', chatId), {
+          messages: updatedMessages,
+        });
+      }
+    };
+  
+    const unSub = onSnapshot(doc(db, 'chats', chatId), async (res) => {
       const chatData = res.data();
       if (chatData) {
         setChat(chatData);
@@ -56,6 +79,9 @@ const Chat = () => {
         } else {
           setHasUnreadMessage(false);
         }
+  
+        // Mark messages as seen
+        markMessagesAsSeen();
       }
     });
   
@@ -63,6 +89,7 @@ const Chat = () => {
       unSub();
     };
   }, [chatId, currentUser?.id]);
+  
 
   useEffect(() => {
     if (hasUnreadMessage) {
@@ -179,7 +206,9 @@ const Chat = () => {
         </div>
       </div>
       <div className="center mostly-customized-scrollbar">
-        {chat?.messages?.map((message) => (
+        {chat?.messages?.map((message) => {
+          console.log('message: ', message);
+        return(
           <div
             className={
               message?.senderId === currentUser?.id ? "message own" : "message"
@@ -190,9 +219,12 @@ const Chat = () => {
               {message?.img && <img src={message.img} alt="" />}
               <p style={{ borderRadius: message?.senderId === currentUser?.id ? "15px 0px 15px 15px" : "0px 15px 15px 15px" }}>{message?.text}</p>
               <span>{moment(message?.createdAt?.toDate()).format('LLL')}</span>
+              {message.senderId === currentUser?.id &&
+              <span className="seen-icon">{message.isSeen ? <PiChecks /> : <PiCheck />}</span>
+        }
             </div>
           </div>
-        ))}
+        )})}
         {img.url && (
           <div className="message own">
             <div className="texts">
@@ -203,18 +235,27 @@ const Chat = () => {
         <div ref={endRef}></div>
       </div>
       <div className="bottom">
-        <input
-          type="text"
-          placeholder={
-            isCurrentUserBlocked || isReceiverBlocked
-              ? "You cannot send a message"
-              : "Type a message..."
-          }
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          disabled={isCurrentUserBlocked || isReceiverBlocked}
-          onKeyDown={handleKey}
-        />
+      <div className="input-container">
+    <input
+      type="text"
+      placeholder={
+        isCurrentUserBlocked || isReceiverBlocked
+          ? "You cannot send a message"
+          : "Type a message..."
+      }
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      disabled={isCurrentUserBlocked || isReceiverBlocked}
+      onKeyDown={handleKey}
+    />
+    <button
+      className="sendButton"
+      onClick={handleSend}
+      disabled={isCurrentUserBlocked || isReceiverBlocked}
+    >
+      <IoSendSharp />
+    </button>
+  </div>
         <div className="icons">
           <label htmlFor="file">
             <FaImage />
@@ -233,13 +274,7 @@ const Chat = () => {
             <EmojiPicker open={open} onEmojiClick={handleEmoji} />
           </div>
         </div>
-        <button
-          className="sendButton"
-          onClick={handleSend}
-          disabled={isCurrentUserBlocked || isReceiverBlocked}
-        >
-          Send
-        </button>
+        
       </div>
     </div>
   );
