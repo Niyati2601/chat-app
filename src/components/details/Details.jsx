@@ -56,7 +56,7 @@ const Details = () => {
 
   const handleLogout = () => {
     auth.signOut();
-    return <Navigate to={Login} />;
+    return <Navigate to={"/"} />;
   };
 
   const toggleSharedPhotos = () => {

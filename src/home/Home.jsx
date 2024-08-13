@@ -8,8 +8,14 @@ const Home = () => {
     const { chatId } = useChatStore();
     return (
         <>
-        <List />
-       {chatId && <Chat />}  {chatId &&<Details />}</>
+            <List />
+            {chatId && (
+                <>
+                    <Chat />
+                    <Details />
+                </>
+            )}
+        </>
     )
 }
 
