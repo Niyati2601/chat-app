@@ -6,9 +6,9 @@ import { signOut } from 'firebase/auth';
 import { useUserStore } from '../lib/userStore';
 import { useChatStore } from '../lib/chatStore';
 import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
-import Login from '../login/Login';
 import { MdDownloadForOffline } from "react-icons/md";
 import { IoIosArrowDropdownCircle, IoIosArrowDropupCircle } from "react-icons/io";
+import { FaFile } from 'react-icons/fa6';
 
 
 const Details = () => {
@@ -16,6 +16,9 @@ const Details = () => {
   const { chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock } = useChatStore();
   const [sharedImages, setSharedImages] = useState([]);
   const [showSharedPhotos, setShowSharedPhotos] = useState(false);
+  const [sharedDocs, setShareDocs] = useState([]);
+  const [showSharedDocs, setShowSharedDocs] = useState(false);
+
 
   useEffect(() => {
     const fetchChatImages = async () => {
@@ -31,7 +34,7 @@ const Details = () => {
           const images = messagesWithImages.map(message => message.img);
           setSharedImages(images);
         } else {
-          console.log("No such document!");
+          console.error("No such document!");
         }
       } catch (error) {
         console.error("Error fetching document: ", error);
@@ -39,6 +42,30 @@ const Details = () => {
     };
 
     fetchChatImages();
+  }, [chatId, currentUser]);
+
+  useEffect(() => {
+    const fetchChatDocs = async () => {
+      if (!chatId || !currentUser) return;
+
+      try {
+        const chatDocRef = doc(db, "chats", chatId); // Adjust to your actual collection and document structure
+        const chatDocSnap = await getDoc(chatDocRef);
+
+        if (chatDocSnap.exists()) {
+          const chatData = chatDocSnap.data();
+          const messagesWithDocs = chatData.messages.filter(message => message.doc); // Filter messages with 'doc'
+          const docs = messagesWithDocs.map(message => message.doc);
+          setShareDocs(docs);
+        } else {
+          console.error("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching document: ", error);
+      }
+    };
+
+    fetchChatDocs();
   }, [chatId, currentUser]);
 
   const handleBlock = async () => {
@@ -50,7 +77,7 @@ const Details = () => {
       });
       changeBlock();
     } catch (error) {
-      console.log('error: ', error);
+      console.error('error: ', error);
     }
   };
 
@@ -62,6 +89,28 @@ const Details = () => {
   const toggleSharedPhotos = () => {
     setShowSharedPhotos(prevState => !prevState);
   };
+
+  const toggleSharedDocs = () => {
+    setShowSharedDocs(prevState => !prevState);
+  };
+  const handleDownload = async (docUrl, docName) => {
+    try {
+      const response = await fetch(docUrl, {
+        mode: 'cors',
+      });
+      const blob = await response.blob();
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = docName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Failed to download file:", error);
+    }
+  };
+  
+
 
   return (
     <div className='detail'>
@@ -99,21 +148,42 @@ const Details = () => {
                         <img src={image} alt='' />
                         <span>{shortName}</span>
                       </div>
-                      <MdDownloadForOffline className='icons' />
+                      <MdDownloadForOffline className='icons' onClick={() => handleDownload(image, fileName)} />
                     </div>
                   );
                 })
               ) : (
-                <span style={{textAlign: 'center', color:'lightgrey'}}>No shared images yet!!</span>
+                <span style={{ textAlign: 'center', color: 'lightgrey' }}>No shared images yet!!</span>
               )}
             </div>
           )}
         </div>
         <div className="option">
-          <div className="title">
+          <div className="title" onClick={toggleSharedDocs}>
             <span>Shared Files</span>
-            <IoIosArrowDropupCircle className='icons' />
+            {showSharedDocs ? <IoIosArrowDropupCircle className='icons' /> : <IoIosArrowDropdownCircle className='icons' />}
           </div>
+          {showSharedDocs && (
+            <div className="photos">
+              {sharedDocs.length > 0 ? (
+                sharedDocs.map((doc, index) => {
+                  const shortName = doc.name.length > 30 ? `${doc.name.substring(0, 30)}...` : doc.name;
+                  return (
+                    <div className="photoItem" key={index}>
+                      <div className="photoDetail">
+                        <a href={doc.url} download={doc.name} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>
+                          <span style={{gap:"12px"}}><FaFile />{shortName}</span>
+                        </a>
+                      </div>
+                      <MdDownloadForOffline className='icons' onClick={() => handleDownload(doc.url, doc.name)} />
+                    </div>
+                  );
+                })
+              ) : (
+                <span style={{ textAlign: 'center', color: 'lightgrey' }}>No shared files yet!!</span>
+              )}
+            </div>
+          )}
         </div>
         <button className='blockButton' onClick={handleBlock}>
           {isCurrentUserBlocked ? "You are blocked" : isReceiverBlocked ? "User is blocked" : "Block User"}

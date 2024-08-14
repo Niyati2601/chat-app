@@ -28,7 +28,7 @@ export default function AddUser() {
         toast.error('User not found.');
       }
     } catch (error) {
-      console.log('Error: ', error);
+      console.error('Error: ', error);
       toast.error('An error occurred while searching for the user.');
     }
   }
@@ -80,7 +80,7 @@ export default function AddUser() {
 
       toast.success('User added successfully.');
     } catch (error) {
-      console.log('Error: ', error);
+      console.error('Error: ', error);
       toast.error('An error occurred while adding the user.');
     }
   }

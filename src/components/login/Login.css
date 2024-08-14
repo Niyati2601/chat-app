@@ -124,6 +124,43 @@
           opacity: 0.6;
         }
       }
+      span {
+        font-size: 12px;
+        text-align: end;
+        width: 100%;
+      }
+      .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      .password-wrapper input {
+        width: 100%;
+        max-width: 100%; /* Full width */
+        border: none;
+        background-color: rgba(17, 25, 40, 0.5);
+        color: white;
+        border-radius: 5px;
+        padding: 15px;
+        outline: none;
+        font-size: 16px;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.5);
+        }
+      }
+
+      .showPassword {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        font-size: x-large;
+        color: rgba(255, 255, 255, 0.5);
+      }
     }
 
     button {
@@ -168,4 +205,3 @@
     }
   }
 }
-

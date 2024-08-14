@@ -7,6 +7,8 @@ import { MdOutlineMoreVert } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 const UserInfo = () => {
   const { currentUser } = useUserStore();
@@ -19,6 +21,23 @@ const UserInfo = () => {
     closeDropdown();
   };
 
+  const deleteAccount = async () => {
+    try {
+      await deleteDoc(doc(db, 'users', currentUser.id));
+
+      await deleteDoc(doc(db, 'userchats', currentUser.id));
+
+      const chatsQuery = query(collection(db, 'chats'), where('participants', 'array-contains', currentUser.id));
+      const chatDocs = await getDocs(chatsQuery);
+      const deletePromises = chatDocs.docs.map(chatDoc => deleteDoc(chatDoc.ref));
+      await Promise.all(deletePromises);
+
+      navigate('/');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  };
+
   const handleDeleteAccount = () => {
     confirmAlert({
       title: 'Confirm Delete',
@@ -27,7 +46,7 @@ const UserInfo = () => {
         {
           label: 'Yes',
           onClick: () => {
-            console.log('Account deleted');
+            deleteAccount();
             setIsOpenDeleteDialog(false);
           }
         },
@@ -57,7 +76,6 @@ const UserInfo = () => {
       <div className="icons">
         <MdOutlineMoreVert onClick={toggleDropdown} />
 
-        {/* Dropdown Menu */}
         <div className={`dropdown ${isDropdownOpen ? 'open' : ''}`}>
           <div className="menu">
             <div className="menu-item" onClick={handleEdit}><FiEdit className='menu-icon' />Edit Profile</div>
@@ -66,7 +84,6 @@ const UserInfo = () => {
         </div>
       </div>
 
-      {/* Delete Account Confirmation Dialog */}
       {isOpenDeleteDialog && (
         <div className="delete-dialog">
           <h3>Are you sure you want to delete your account?</h3>

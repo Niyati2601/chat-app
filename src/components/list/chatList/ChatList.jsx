@@ -11,7 +11,6 @@ const ChatList = () => {
   const [addMode, setAddMode] = useState(false);
   const [input, setInput] = useState();
   const { currentUser } = useUserStore();
-  console.log('currentUser: ', currentUser);
   const { chatId, changeChat } = useChatStore();
 
   useEffect(() => {

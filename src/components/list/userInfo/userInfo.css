@@ -79,13 +79,15 @@
           width: max-content;
         }
   
+        .menu {
+  
         .menu-item {
           padding: 15px 15px;
           cursor: pointer;
           font-size: 14px;
           color: #fff;
           transition: background-color 0.3s ease;
-          border-radius: 8px;
+          /* border-radius: 8px; */
           gap: 10px;
   
           &:hover {
@@ -93,9 +95,14 @@
             color: #333;
           }
 
-          svg{
-            font-size: 15px;
+          .menu-icon{
+            font-size: 14px;
+            margin-right: 5px;
           }
+
+
+        }
+
         }
       }
     }
